@@ -107,6 +107,20 @@
   .head .sets { font-family: var(--display); font-size: 32px; font-weight: 700; line-height: 1; white-space: nowrap; font-variant-numeric: tabular-nums; text-align: right; }
   .head .sets b { font-size: 16px; font-weight: 600; color: var(--muted); margin: 0 3px; }
   .head .sets em { display: block; font-style: normal; font-family: var(--body); font-size: 11px; color: var(--muted); font-weight: 400; margin-top: 3px; }
+  .mus { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
+  .mus b, .mus i { font-style: normal; font-weight: 500; font-size: 11px; line-height: 1.4; border-radius: 6px; padding: 1px 7px; }
+  .mus b { background: var(--fg); color: var(--bg); }
+  .mus i { border: 1px solid var(--line); color: var(--muted); }
+  .vol { display: grid; grid-template-columns: auto 1fr auto; gap: 6px 10px; align-items: center; font-size: 13px; margin: 8px 0 6px; }
+  .vol .g { font-weight: 600; white-space: nowrap; }
+  .vol .bar { height: 10px; background: var(--surface-2); border-radius: 5px; overflow: hidden; position: relative; min-width: 0; }
+  .vol .bar b { position: absolute; left: 0; top: 0; bottom: 0; background: var(--fg); border-radius: 5px; }
+  .vol .bar i { position: absolute; top: 0; bottom: 0; background: var(--line); }
+  .vol .num { font-family: var(--display); font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; text-align: right; }
+  .vol .num small { font-family: var(--body); font-size: 11px; color: var(--muted); font-weight: 400; margin-left: 3px; }
+  .legend { display: flex; gap: 10px; flex-wrap: wrap; color: var(--muted); font-size: 12px; margin-top: 4px; }
+  .legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 4px; vertical-align: -1px; background: var(--fg); }
+  .legend span.s::before { background: var(--line); }
   .check {
     appearance: none; width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--line); background: var(--surface);
     color: transparent; font-size: 16px; line-height: 1; cursor: pointer; display: grid; place-items: center; padding: 0; justify-self: end;
@@ -167,7 +181,7 @@
 <div class="wrap">
   <header>
     <h1>四练上下肢计划</h1>
-    <p>每周 4 练，上下肢分化，每个部位一周两次。图片在起始和结束两个姿势间自动切换，点图可暂停。加到主屏幕当 App 用。</p>
+    <p>每周 4 练，上下肢分化，每个部位一周两次。图片在起始和结束两个姿势间自动切换，点图可暂停。动作名下面深色标签是主练部位，描边的是辅助部位。</p>
   </header>
 
   <nav class="tabs" role="tablist" id="tabs"></nav>
@@ -188,111 +202,116 @@
 <script>
   /* 动作库：img 两帧图片前缀；cues 三条最短要点；prep / move / watch 是展开后的完整文字 */
   const EX = {
-    bench: { n: '杠铃卧推', eq: '卧推架', img: 'Barbell_Bench_Press_-_Medium_Grip',
+    bench: { n: '杠铃卧推', eq: '卧推架', img: 'Barbell_Bench_Press_-_Medium_Grip', pri: ['胸'], sec: ['三头', '肩前束'],
       cues: ['肩胛后夹下沉', '触胸不弹', '屁股不离凳'],
       prep: ['躺平，眼睛在杠的正下方，双脚踩实地面', '肩胛骨往后夹、往下沉，整个过程不松', '握距比肩宽一掌，手腕保持直的'],
       move: ['杠下放到胸中下部，手肘和身体夹角 45 到 75 度', '轻触胸停一下', '沿略微斜向头的弧线推回到肩膀正上方'],
       watch: ['屁股不能离开凳子', '杠不要在胸上弹起来', '推起时肩膀不往前耸'] },
-    latWide: { n: '高位下拉', eq: '宽握正握', img: 'Wide-Grip_Lat_Pulldown',
+    latWide: { n: '高位下拉', eq: '宽握正握', img: 'Wide-Grip_Lat_Pulldown', pri: ['背阔肌'], sec: ['二头', '中背'],
       cues: ['肘往下往后拉', '拉到上胸', '不靠后仰借力'],
       prep: ['大腿卡在挡垫下面，脚踩实', '握距比肩宽一到两拳，身体往后仰 10 到 20 度', '先把肩胛骨往下沉，再开始拉'],
       move: ['手肘往下、往后带，把杠拉到上胸', '顶点肩胛骨往中间夹，停一秒', '慢慢放回到手臂伸直，肩膀不要被拉得耸起来'],
       watch: ['不要用身体后仰借力', '想着用手肘拉，不是用手', '放回去比拉的时候慢'],
       tip: '引体向上的替代动作。重量能拉到自己体重八成时再去试引体。' },
-    latClose: { n: '高位下拉', eq: '窄握对握 · V 把', img: 'Close-Grip_Front_Lat_Pulldown',
+    latClose: { n: '高位下拉', eq: '窄握对握 · V 把', img: 'Close-Grip_Front_Lat_Pulldown', pri: ['背阔肌'], sec: ['二头'],
       cues: ['肘贴身往下', '拉到上胸', '不耸肩'],
       prep: ['V 把，两手掌心相对', '大腿卡稳，身体微后仰，肩胛骨先往下沉'],
       move: ['手肘贴着身体往下拉，把把手拉到上胸', '顶点停一秒', '慢放到手臂伸直'],
       watch: ['不耸肩', '不靠后仰借力', '肘往身体两侧贴，别往外张'] },
-    dbPress: { n: '坐姿哑铃肩推', eq: '哑铃 · 可调椅', img: 'Dumbbell_Shoulder_Press',
+    dbPress: { n: '坐姿哑铃肩推', eq: '哑铃 · 可调椅', img: 'Dumbbell_Shoulder_Press', pri: ['肩前束', '肩中束'], sec: ['三头'],
       cues: ['肘在手腕下方', '放到耳朵高', '腰不过度挺'],
       prep: ['靠背调到 80 到 90 度，腰贴靠背，核心收紧', '哑铃提到耳朵两侧，手肘在手腕正下方'],
       move: ['推到头顶上方，两个哑铃靠近但不相碰', '慢放到耳朵高度'],
       watch: ['别过度挺腰，肋骨往下压', '下放不低于耳朵', '手肘不要往外张成一字'] },
-    cableRow: { n: '坐姿绳索划船', eq: '划船机 · V 把', img: 'Seated_Cable_Rows',
+    cableRow: { n: '坐姿绳索划船', eq: '划船机 · V 把', img: 'Seated_Cable_Rows', pri: ['中背', '背阔肌'], sec: ['二头', '肩后束'],
       cues: ['肘贴身拉到肚脐', '顶点夹背', '腰不摆'],
       prep: ['脚踩稳踏板，膝盖微屈，上身坐直', '手臂伸直，肩胛骨放松往前'],
       move: ['手肘贴着身体往后拉到肚脐附近', '顶点挺胸，肩胛骨夹紧，停一秒', '慢慢放回去，让肩胛骨跟着往前伸'],
       watch: ['不要用腰前后摆动借力', '肩膀不往上耸', '回放要控制'] },
-    latRaise: { n: '侧平举', eq: '哑铃', img: 'Side_Lateral_Raise',
+    latRaise: { n: '侧平举', eq: '哑铃', img: 'Side_Lateral_Raise', pri: ['肩中束'], sec: ['斜方肌'],
       cues: ['肘带动', '抬到肩高', '不耸肩'],
       prep: ['哑铃在身体两侧，手肘微屈并保持', '躯干微微前倾一点'],
       move: ['想着用手肘带动，往两侧抬到与肩膀同高', '手和手肘差不多高', '慢放'],
       watch: ['肩膀往下沉，不耸', '重量宁可轻', '顶点不高过肩'] },
-    pushdown: { n: '绳索下压', eq: '高位绳索', img: 'Triceps_Pushdown',
+    pushdown: { n: '绳索下压', eq: '高位绳索', img: 'Triceps_Pushdown', pri: ['三头'], sec: [],
       cues: ['肘贴身不动', '压到伸直', '顶点收紧'],
       prep: ['站在绳索前一小步，上身微前倾', '手肘贴在身体两侧，前臂抬到约 90 度'],
       move: ['只动前臂，往下压到手臂完全伸直', '顶点收紧三头，停一下', '慢回到 90 度'],
       watch: ['手肘不要前后晃', '不要用身体往下压', '肩膀不往前耸'] },
-    squat: { n: '杠铃深蹲', eq: '深蹲架', img: 'Barbell_Squat',
+    squat: { n: '杠铃深蹲', eq: '深蹲架', img: 'Barbell_Squat', pri: ['股四头', '臀'], sec: ['腘绳肌', '核心', '下背'],
       cues: ['核心绷紧', '蹲到大腿平行', '膝盖顺脚尖'],
       prep: ['杠放在上背斜方肌上，不压颈椎', '脚与肩同宽或略宽，脚尖外展 15 到 30 度', '出架站稳，吸气，肚子往外顶绷紧核心'],
       move: ['屁股往后、膝盖往前同时启动，往下坐', '至少蹲到大腿与地面平行', '站起时胸和屁股一起起来'],
       watch: ['膝盖不往内扣', '脚跟不离地', '背保持平直'] },
-    rdl: { n: '罗马尼亚硬拉', eq: '杠铃', img: 'Romanian_Deadlift',
+    rdl: { n: '罗马尼亚硬拉', eq: '杠铃', img: 'Romanian_Deadlift', pri: ['腘绳肌', '臀'], sec: ['下背'],
       cues: ['屁股往后推', '杠贴腿滑', '背不圆'],
       prep: ['站立持杠，脚与髋同宽', '膝盖微屈，整个过程保持这个弯曲度', '肩胛骨后收，背绷直'],
       move: ['屁股往后推，杠贴着大腿往下滑', '降到大腿后侧拉伸感最强的位置，通常在膝盖下方', '髋往前顶站直，顶点夹臀'],
       watch: ['不是往下蹲，是屁股往后推', '杠全程贴腿', '背圆了就减重量'] },
-    legPress: { n: '腿举', eq: '腿举机', img: 'Leg_Press',
+    legPress: { n: '腿举', eq: '腿举机', img: 'Leg_Press', pri: ['股四头'], sec: ['臀'],
       cues: ['屁股贴垫', '放到膝 90 度', '顶点不锁膝'],
       prep: ['脚放踏板中部，与肩同宽，脚尖微外展', '腰和臀部贴紧靠背'],
       move: ['慢放到膝盖约 90 度，屁股不离垫', '推回去，膝盖不完全锁死'],
       watch: ['屁股离垫就是放太深', '膝盖不内扣', '顶点不锁膝'] },
-    legCurl: { n: '腿弯举', eq: '器械', img: 'Seated_Leg_Curl',
+    legCurl: { n: '腿弯举', eq: '器械', img: 'Seated_Leg_Curl', pri: ['腘绳肌'], sec: ['小腿'],
       cues: ['勾脚往臀拉', '顶点停一秒', '慢放不甩'],
       prep: ['挡垫卡在脚踝上方一点', '膝关节对准器械转轴'],
       move: ['勾脚，把挡垫往臀部方向拉', '顶点停一秒', '慢放到腿接近伸直'],
       watch: ['髋不要抬起来', '下放控制住'] },
-    calf: { n: '提踵', eq: '站姿器械', img: 'Standing_Calf_Raises',
+    calf: { n: '提踵', eq: '站姿器械', img: 'Standing_Calf_Raises', pri: ['小腿'], sec: [],
       cues: ['底部拉到位', '顶点停一秒', '全程慢'],
       prep: ['前脚掌踩在踏板边缘，脚跟悬空', '脚跟先往下沉到小腿有拉伸感'],
       move: ['踮到最高点，停一秒', '用两到三秒慢慢降到最低'],
       watch: ['别弹跳', '底部拉伸要到位', '膝盖保持伸直'] },
-    core: { n: '悬垂举腿', eq: '单杠 · 或绳索卷腹', img: 'Hanging_Leg_Raise',
+    core: { n: '悬垂举腿', eq: '单杠 · 或绳索卷腹', img: 'Hanging_Leg_Raise', pri: ['核心'], sec: ['前臂'],
       cues: ['收腹抬腿', '不摆荡', '做不了就屈膝'],
       prep: ['挂在单杠上，肩膀微微下沉', '做不了直腿就屈膝抬到胸前'],
       move: ['收腹，把腿抬到与地面平行', '慢放'],
       watch: ['不要前后摆荡借力', '换绳索卷腹时是卷脊柱，不是弯髋'] },
-    bbRow: { n: '杠铃划船', eq: '杠铃', img: 'Bent_Over_Barbell_Row',
+    bbRow: { n: '杠铃划船', eq: '杠铃', img: 'Bent_Over_Barbell_Row', pri: ['背阔肌', '中背'], sec: ['二头', '肩后束', '下背'],
       cues: ['俯身 30–45 度', '拉到下腹', '身体不起伏'],
       prep: ['屁股往后推俯身，上身与地面约 30 到 45 度', '膝盖微屈，正握比肩略宽，背绷平'],
       move: ['手肘往后带，把杠拉到下腹、肚脐附近', '顶点夹背，停一下', '慢放到手臂伸直'],
       watch: ['身体不上下起伏借力', '背不能圆', '拉到下腹，不是胸'],
       tip: '下背累或者腰有感觉，就换成胸部支撑划船，一样的组次数。' },
-    inclineDb: { n: '上斜哑铃卧推', eq: '可调椅 30 度', img: 'Incline_Dumbbell_Press',
+    inclineDb: { n: '上斜哑铃卧推', eq: '可调椅 30 度', img: 'Incline_Dumbbell_Press', pri: ['上胸'], sec: ['肩前束', '三头'],
       cues: ['靠背 30 度', '肩胛后夹', '放到胸外侧'],
       prep: ['靠背调到 30 度左右，再高就变成练肩', '肩胛骨后夹下沉，哑铃举到上胸两侧'],
       move: ['推到上方让两个哑铃靠拢', '慢放到胸外侧有拉伸感'],
       watch: ['靠背角度不超过 45 度', '手腕保持直的', '手肘不要掉太低'] },
-    facePull: { n: '面拉', eq: '绳索 · 绳把 · 脸的高度', img: 'Face_Pull',
+    facePull: { n: '面拉', eq: '绳索 · 绳把 · 脸的高度', img: 'Face_Pull', pri: ['肩后束', '肩袖'], sec: ['中背'],
       cues: ['拉到脸两侧', '肘高于手', '重量要轻'],
       prep: ['绳索调到脸的高度，握住绳把两端，拇指朝后', '退一步让绳索绷紧'],
       move: ['往脸的两侧拉，手肘高、往外张', '拉到底时手在耳朵旁边，上臂像在做"投降"的姿势', '慢放'],
       watch: ['重量要轻，练的是后肩和肩袖', '手肘全程高于手腕', '不耸肩'] },
-    curl: { n: '弯举', eq: '杠铃 · 锤式隔周换', img: 'Barbell_Curl', img2: 'Hammer_Curls',
+    cableFly: { n: '龙门架夹胸', eq: '绳索 · 高位双把', img: 'Cable_Crossover', pri: ['胸'], sec: ['肩前束'],
+      cues: ['肘微屈固定', '划弧到胸前', '顶点挤一下'],
+      prep: ['两边滑轮调到高位，各握一个把手，往前跨一步成弓步', '上身前倾约 20 度，手肘微屈并全程保持这个角度'],
+      move: ['两手沿弧线往下往前收到胸前，手腕在胸下方相碰或交叉', '顶点挤胸一秒', '慢放回到胸有拉伸感的位置'],
+      watch: ['不是推，是用胸把手臂夹过来', '肘的角度不变，变了就成了三头在推', '回放不要让肩膀被拽到身后'] },
+    curl: { n: '弯举', eq: '杠铃 · 锤式隔周换', img: 'Barbell_Curl', pri: ['二头'], sec: ['前臂'], img2: 'Hammer_Curls',
       cues: ['肘贴身不前跑', '身体不摆', '慢放'],
       prep: ['站立，手肘贴在身体两侧', '杠铃弯举掌心朝前；锤式弯举掌心相对'],
       move: ['只动前臂，弯到顶部', '顶点收紧二头，停一下', '慢放到手臂伸直'],
       watch: ['手肘不往前跑', '身体不前后摆动', '下放一定要控制'] },
-    negPull: { n: '离心引体向上', eq: '单杠 · 踩凳或跳上去', img: 'Pullups', extra: true,
+    negPull: { n: '离心引体向上', eq: '单杠 · 踩凳或跳上去', img: 'Pullups', pri: ['背阔肌'], sec: ['二头', '前臂'], extra: true,
       cues: ['从顶部开始', '3–5 秒放下', '放不住就停'],
       prep: ['踩凳子或跳起来让下巴过杠，正握略宽于肩'],
       move: ['用 3 到 5 秒慢慢放到手臂伸直', '踩回凳子，再来一次'],
       watch: ['每次都从顶部开始', '放不住的时候这组就结束'],
       tip: '加练，不计入正式组数。能稳定做 3 组每组 5 次慢放后，就可以试正式引体了。' },
-    bulgarian: { n: '保加利亚分腿蹲', eq: '哑铃 · 凳子', img: 'Split_Squat_with_Dumbbells',
+    bulgarian: { n: '保加利亚分腿蹲', eq: '哑铃 · 凳子', img: 'Split_Squat_with_Dumbbells', pri: ['股四头', '臀'], sec: ['腘绳肌', '核心'],
       cues: ['后脚搭凳', '前腿蹲到平行', '重心在前脚'],
       prep: ['背对凳子，一只脚的脚背放在凳面上', '前脚往前迈一大步，哑铃垂在身体两侧'],
       move: ['上身直立略前倾，往下蹲到前腿大腿接近平行', '前膝顺着脚尖方向', '用前脚蹬起站直'],
       watch: ['前脚离凳子太近会顶膝盖', '后腿只是支撑', '两边做完再换'] },
-    hack: { n: '哈克蹲', eq: '器械 · 或腿举', img: 'Hack_Squat',
+    hack: { n: '哈克蹲', eq: '器械 · 或腿举', img: 'Hack_Squat', pri: ['股四头'], sec: ['臀'],
       cues: ['背贴靠背', '蹲到平行', '脚跟不离'],
       prep: ['背贴靠背，脚放踏板中间偏上，与肩同宽'],
       move: ['慢放到大腿与踏板平行', '推起，膝盖不锁死'],
       watch: ['脚跟不离踏板', '膝盖不内扣'],
       tip: '时间不够先砍这个动作。' },
-    hipThrust: { n: '臀推', eq: '杠铃 · 凳子', img: 'Barbell_Hip_Thrust',
+    hipThrust: { n: '臀推', eq: '杠铃 · 凳子', img: 'Barbell_Hip_Thrust', pri: ['臀'], sec: ['腘绳肌'],
       cues: ['肩胛下缘靠凳', '顶到身体一条线', '下巴微收'],
       prep: ['上背靠在凳子边缘，肩胛骨下缘贴凳', '杠放在髋前，垫上护垫', '脚跟靠近臀部，小腿在顶点垂直地面'],
       move: ['髋往上顶，顶到上身和大腿一条直线', '顶点夹臀停一秒', '慢放'],
@@ -310,7 +329,7 @@
     ]},
     { id: 'ub', tab: '上肢', mark: 'B', title: '上肢 B', focus: '拉为主', mins: 65, items: [
       ['bbRow', 4, '6–8', '休 2–3 分'], ['inclineDb', 3, '8–10', '休 90 秒'], ['latClose', 3, '10–12', '休 90 秒'],
-      ['facePull', 3, '15', '休 60 秒'], ['latRaise', 3, '12–15', '休 60 秒'], ['curl', 3, '10–12', '休 60 秒'],
+      ['facePull', 3, '15', '休 60 秒'], ['cableFly', 3, '12–15', '休 60 秒'], ['curl', 3, '10–12', '休 60 秒'],
       ['negPull', 3, '3–5', '休 90 秒'],
     ]},
     { id: 'lb', tab: '下肢', mark: 'B', title: '下肢 B', focus: '后链为主', mins: 70, items: [
@@ -319,8 +338,35 @@
     ]},
   ];
 
+  /* 一周各部位组数：主练算直接组，辅助算间接组；加练不计 */
+  const GROUP = { '胸': '胸', '上胸': '胸', '肩前束': '肩', '肩中束': '肩', '肩后束': '肩', '肩袖': '肩', '斜方肌': '肩',
+    '背阔肌': '背', '中背': '背', '下背': '下背', '二头': '二头', '三头': '三头', '前臂': '前臂',
+    '股四头': '股四头', '腘绳肌': '腘绳肌', '臀': '臀', '小腿': '小腿', '核心': '核心' };
+  const ORDER = ['胸', '背', '肩', '股四头', '腘绳肌', '臀', '三头', '二头', '小腿', '核心', '下背', '前臂'];
+  function weeklyVolume() {
+    const v = {};
+    DAYS.forEach(d => d.items.forEach(([k, sets]) => {
+      const ex = EX[k]; if (ex.extra) return;
+      const seen = new Set();
+      ex.pri.forEach(m => { const g = GROUP[m]; if (seen.has(g)) return; seen.add(g); v[g] = v[g] || { d: 0, i: 0 }; v[g].d += sets; });
+      ex.sec.forEach(m => { const g = GROUP[m]; if (seen.has(g)) return; seen.add(g); v[g] = v[g] || { d: 0, i: 0 }; v[g].i += sets; });
+    }));
+    const max = Math.max.apply(null, Object.values(v).map(x => x.d + x.i));
+    return ORDER.filter(g => v[g]).map(g => {
+      const { d, i } = v[g];
+      return '<div class="g">' + g + '</div>' +
+        '<div class="bar"><b style="width:' + (d / max * 100) + '%"></b><i style="left:' + (d / max * 100) + '%;width:' + (i / max * 100) + '%"></i></div>' +
+        '<div class="num">' + d + (i ? '<small>+' + i + '</small>' : '') + '</div>';
+    }).join('');
+  }
+
   const NOTES = `
     <div class="notes">
+      <h3>一周各部位组数</h3>
+      <div class="vol">${weeklyVolume()}</div>
+      <div class="legend"><span>直接组（主练）</span><span class="s">间接组（辅助）</span></div>
+      <p class="src">增肌常见区间是每个部位每周 10–20 个直接组，间接组算半个左右。背、肩的间接组多是因为推拉动作互相带到。</p>
+
       <h3>排班</h3>
       <p>练二休一、练二休二，上下肢交替，不要四天连着练。一种排法：</p>
       <div class="week">
@@ -438,7 +484,8 @@
           '<div class="dots"><i class="on"></i><i></i></div><div class="lbl">起始</div>' +
         '</div>' +
         '<div class="head">' +
-          '<div class="body"><div class="name">' + esc(it.n) + '</div><div class="sub">' + esc(it.eq) + ' · ' + esc(it.rest) + '</div></div>' +
+          '<div class="body"><div class="name">' + esc(it.n) + '</div><div class="sub">' + esc(it.eq) + ' · ' + esc(it.rest) + '</div>' +
+          '<div class="mus">' + it.pri.map(m => '<b>' + esc(m) + '</b>').join('') + it.sec.map(m => '<i>' + esc(m) + '</i>').join('') + '</div></div>' +
           '<div class="sets">' + it.sets + '<b>×</b>' + esc(it.reps) + '<em>组 × 次</em></div>' +
           '<button type="button" class="check" aria-label="完成" aria-pressed="' + isDone + '">✓</button>' +
         '</div>' +
