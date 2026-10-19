@@ -1,0 +1,10 @@
+{
+  "name": "yilian",
+  "version": "0.1.0",
+  "private": true,
+  "description": "一练：每周四练的上下肢分化训练计划，纯静态 PWA。",
+  "scripts": {
+    "dev": "npx -y serve public",
+    "deploy": "npx -y wrangler@4 pages deploy public --project-name yilian-app --commit-dirty=true"
+  }
+}

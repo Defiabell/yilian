@@ -1,0 +1,11 @@
+{
+  "name": "一练",
+  "short_name": "一练",
+  "description": "每周四练的上下肢分化训练计划，带动作示意图、勾选和组间计时。",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#111419",
+  "theme_color": "#111419",
+  "icons": [{ "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }]
+}

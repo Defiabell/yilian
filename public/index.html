@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>一练 · 四练上下肢计划</title>
+<meta name="description" content="每周四练的上下肢分化训练计划：动作示意图、组数次数、要点、勾选和组间计时。">
+<meta name="theme-color" content="#f2f3f5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111419" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="一练">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" href="/icon-512.png" type="image/png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&display=swap">
+<style>
+  /* Layout: one column phone-first; sticky day tabs on top, sticky rest timer at the bottom, picture-first exercise cards in between. */
+  :root {
+    --bg: #f2f3f5;
+    --surface: #ffffff;
+    --surface-2: #e9ebee;
+    --fg: #171b21;
+    --muted: #5f6974;
+    --line: #d9dde3;
+    --accent: #d84e1c;
+    --accent-ink: #ffffff;
+    --accent-soft: #fbe8df;
+    --ok: #1f8a4c;
+    --ok-soft: #e0f3e8;
+    --display: "Barlow Condensed", "Arial Narrow", "PingFang SC", sans-serif;
+    --body: -apple-system, "PingFang SC", "Helvetica Neue", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #111419; --surface: #1b1f26; --surface-2: #252a33; --fg: #eef0f3; --muted: #99a2ad;
+      --line: #2c323b; --accent: #ff7b47; --accent-ink: #1a0d06; --accent-soft: #3b2117;
+      --ok: #4ccb7f; --ok-soft: #173426; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #111419; --surface: #1b1f26; --surface-2: #252a33; --fg: #eef0f3; --muted: #99a2ad;
+    --line: #2c323b; --accent: #ff7b47; --accent-ink: #1a0d06; --accent-soft: #3b2117;
+    --ok: #4ccb7f; --ok-soft: #173426; color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  html { background: var(--bg); padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  body {
+    background: var(--bg); color: var(--fg); font-family: var(--body);
+    font-size: 15px; line-height: 1.5; margin: 0;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 0 110px;
+  }
+  body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+  .wrap { max-width: 560px; margin: 0 auto; }
+
+  header { padding: 20px 0 12px; }
+  header h1 { font-family: var(--display); font-size: 34px; font-weight: 700; line-height: 1.05; margin: 0; letter-spacing: 0.01em; text-wrap: balance; }
+  header p { margin: 6px 0 0; color: var(--muted); font-size: 13px; }
+
+  .tabs {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+    background: var(--bg); padding: 8px 0 10px;
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px;
+  }
+  .tab {
+    appearance: none; border: 1px solid var(--line); background: var(--surface); color: var(--fg);
+    border-radius: 10px; padding: 8px 2px; font: inherit; font-size: 13px; line-height: 1.2; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 0;
+  }
+  .tab small { font-family: var(--display); font-size: 15px; font-weight: 700; color: var(--muted); letter-spacing: 0.04em; }
+  .tab[aria-selected="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+  .tab[aria-selected="true"] small { color: var(--accent); }
+  .tab:focus-visible, .check:focus-visible, .reset:focus-visible, .more:focus-visible, .frame:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .day-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 8px 0 10px; }
+  .day-head h2 { font-family: var(--display); font-size: 26px; font-weight: 700; margin: 0; line-height: 1.1; }
+  .day-head h2 span { color: var(--accent); margin-left: 6px; }
+  .day-head .meta { color: var(--muted); font-size: 12px; text-align: right; font-variant-numeric: tabular-nums; }
+  .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 12px; color: var(--muted); }
+  .reset { appearance: none; background: none; border: 1px solid var(--line); color: var(--muted); border-radius: 8px; padding: 5px 10px; font: inherit; font-size: 12px; cursor: pointer; }
+  .progress { height: 4px; background: var(--surface-2); border-radius: 2px; margin: 0 0 12px; overflow: hidden; }
+  .progress i { display: block; height: 100%; width: 0; background: var(--ok); transition: width .25s; }
+
+  .list { display: grid; gap: 14px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+  .card.extra { border-style: dashed; }
+
+  /* 两帧动图 */
+  .frame { position: relative; width: 100%; aspect-ratio: 3 / 2; max-width: 100%; background: var(--surface-2); cursor: pointer; -webkit-tap-highlight-color: transparent; overflow: hidden; }
+  .frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; max-width: 100%; transition: opacity .35s; }
+  .frame img.b { opacity: 0; }
+  .frame.alt img.b { opacity: 1; }
+  .frame .dots { position: absolute; left: 10px; bottom: 8px; display: flex; gap: 5px; }
+  .frame .dots i { width: 7px; height: 7px; border-radius: 50%; background: #fff; opacity: .45; box-shadow: 0 0 0 1px rgba(0,0,0,.25); }
+  .frame .dots i.on { opacity: 1; }
+  .frame .lbl { position: absolute; right: 10px; bottom: 6px; font-family: var(--display); font-size: 13px; letter-spacing: .08em; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.6); }
+  .frame .n { position: absolute; left: 10px; top: 8px; font-family: var(--display); font-size: 20px; font-weight: 700; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,.7); line-height: 1; }
+  .card.done .frame { opacity: .5; }
+
+  .head { display: grid; grid-template-columns: 1fr auto 34px; gap: 10px; align-items: center; padding: 10px 12px 8px 12px; }
+  .head .body { min-width: 0; }
+  .head .name { font-weight: 600; font-size: 17px; line-height: 1.3; }
+  .head .sub { color: var(--muted); font-size: 12px; margin-top: 1px; }
+  .head .sets { font-family: var(--display); font-size: 32px; font-weight: 700; line-height: 1; white-space: nowrap; font-variant-numeric: tabular-nums; text-align: right; }
+  .head .sets b { font-size: 16px; font-weight: 600; color: var(--muted); margin: 0 3px; }
+  .head .sets em { display: block; font-style: normal; font-family: var(--body); font-size: 11px; color: var(--muted); font-weight: 400; margin-top: 3px; }
+  .check {
+    appearance: none; width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--line); background: var(--surface);
+    color: transparent; font-size: 16px; line-height: 1; cursor: pointer; display: grid; place-items: center; padding: 0; justify-self: end;
+  }
+  .card.done .check { background: var(--ok); border-color: var(--ok); color: #fff; }
+  .card.done .name { color: var(--muted); text-decoration: line-through; }
+
+  .cues { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 12px 12px; }
+  .cues span { background: var(--accent-soft); color: var(--fg); border-radius: 999px; padding: 3px 10px; font-size: 13px; line-height: 1.5; }
+  .cues .more { appearance: none; background: none; border: 1px dashed var(--line); color: var(--muted); border-radius: 999px; padding: 3px 10px; font: inherit; font-size: 13px; cursor: pointer; }
+
+  .how { border-top: 1px solid var(--line); padding: 10px 12px 12px 12px; display: grid; gap: 8px; font-size: 14px; }
+  .how[hidden] { display: none; }
+  .how .row { display: grid; grid-template-columns: 34px 1fr; gap: 8px; }
+  .how .k { font-family: var(--display); font-size: 15px; font-weight: 700; letter-spacing: 0.06em; color: var(--muted); padding-top: 2px; }
+  .how ol, .how ul { margin: 0; padding-left: 16px; }
+  .how li { margin-bottom: 3px; }
+  .how .tip { background: var(--accent-soft); border-radius: 8px; padding: 6px 10px; font-size: 13px; }
+
+  /* 说明 */
+  .notes h3 { font-family: var(--display); font-size: 22px; font-weight: 700; margin: 18px 0 8px; }
+  .notes h3:first-child { margin-top: 8px; }
+  .notes p { margin: 0 0 8px; }
+  .notes ul { margin: 0; padding-left: 18px; }
+  .notes li { margin-bottom: 4px; }
+  .notes .src { color: var(--muted); font-size: 12px; }
+  .week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin: 8px 0 4px; }
+  .week div { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 8px 2px; text-align: center; font-size: 12px; min-width: 0; }
+  .week div small { display: block; color: var(--muted); font-size: 11px; margin-bottom: 2px; }
+  .week div.on { background: var(--accent-soft); border-color: transparent; font-weight: 600; }
+  .week div.on b { color: var(--accent); font-family: var(--display); font-size: 16px; }
+  .week div.off { color: var(--muted); }
+  .signals { display: grid; gap: 6px; }
+  .signals div { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; font-size: 13px; }
+
+  /* 组间计时 */
+  .timer {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 6;
+    background: var(--surface); border-top: 1px solid var(--line);
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-top: 10px; padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  }
+  .timer .in { max-width: 560px; margin: 0 auto; display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; }
+  .timer .btns { display: flex; gap: 6px; }
+  .timer button { appearance: none; font: inherit; border-radius: 10px; cursor: pointer; padding: 9px 0; flex: 1; border: 1px solid var(--line); background: var(--surface-2); color: var(--fg); font-weight: 600; }
+  .timer button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .timer .stop { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .timer .clock { font-family: var(--display); font-size: 34px; font-weight: 700; line-height: 1; min-width: 72px; text-align: right; font-variant-numeric: tabular-nums; }
+  .timer .clock small { display: block; font-family: var(--body); font-size: 10px; color: var(--muted); font-weight: 400; letter-spacing: 0.08em; margin-bottom: 2px; }
+  .timer .clock.run { color: var(--accent); }
+  .timer .clock.over { color: var(--ok); }
+  @media (prefers-reduced-motion: reduce) { .progress i, .frame img { transition: none; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1>四练上下肢计划</h1>
+    <p>每周 4 练，上下肢分化，每个部位一周两次。图片在起始和结束两个姿势间自动切换，点图可暂停。加到主屏幕当 App 用。</p>
+  </header>
+
+  <nav class="tabs" role="tablist" id="tabs"></nav>
+  <section id="panel"></section>
+</div>
+
+<div class="timer">
+  <div class="in">
+    <div class="btns" id="timerBtns">
+      <button type="button" data-s="60">60 秒</button>
+      <button type="button" data-s="90">90 秒</button>
+      <button type="button" data-s="180">3 分钟</button>
+    </div>
+    <div class="clock" id="clock"><small>组间休息</small>0:00</div>
+  </div>
+</div>
+
+<script>
+  /* 动作库：img 两帧图片前缀；cues 三条最短要点；prep / move / watch 是展开后的完整文字 */
+  const EX = {
+    bench: { n: '杠铃卧推', eq: '卧推架', img: 'Barbell_Bench_Press_-_Medium_Grip',
+      cues: ['肩胛后夹下沉', '触胸不弹', '屁股不离凳'],
+      prep: ['躺平，眼睛在杠的正下方，双脚踩实地面', '肩胛骨往后夹、往下沉，整个过程不松', '握距比肩宽一掌，手腕保持直的'],
+      move: ['杠下放到胸中下部，手肘和身体夹角 45 到 75 度', '轻触胸停一下', '沿略微斜向头的弧线推回到肩膀正上方'],
+      watch: ['屁股不能离开凳子', '杠不要在胸上弹起来', '推起时肩膀不往前耸'] },
+    latWide: { n: '高位下拉', eq: '宽握正握', img: 'Wide-Grip_Lat_Pulldown',
+      cues: ['肘往下往后拉', '拉到上胸', '不靠后仰借力'],
+      prep: ['大腿卡在挡垫下面，脚踩实', '握距比肩宽一到两拳，身体往后仰 10 到 20 度', '先把肩胛骨往下沉，再开始拉'],
+      move: ['手肘往下、往后带，把杠拉到上胸', '顶点肩胛骨往中间夹，停一秒', '慢慢放回到手臂伸直，肩膀不要被拉得耸起来'],
+      watch: ['不要用身体后仰借力', '想着用手肘拉，不是用手', '放回去比拉的时候慢'],
+      tip: '引体向上的替代动作。重量能拉到自己体重八成时再去试引体。' },
+    latClose: { n: '高位下拉', eq: '窄握对握 · V 把', img: 'Close-Grip_Front_Lat_Pulldown',
+      cues: ['肘贴身往下', '拉到上胸', '不耸肩'],
+      prep: ['V 把，两手掌心相对', '大腿卡稳，身体微后仰，肩胛骨先往下沉'],
+      move: ['手肘贴着身体往下拉，把把手拉到上胸', '顶点停一秒', '慢放到手臂伸直'],
+      watch: ['不耸肩', '不靠后仰借力', '肘往身体两侧贴，别往外张'] },
+    dbPress: { n: '坐姿哑铃肩推', eq: '哑铃 · 可调椅', img: 'Dumbbell_Shoulder_Press',
+      cues: ['肘在手腕下方', '放到耳朵高', '腰不过度挺'],
+      prep: ['靠背调到 80 到 90 度，腰贴靠背，核心收紧', '哑铃提到耳朵两侧，手肘在手腕正下方'],
+      move: ['推到头顶上方，两个哑铃靠近但不相碰', '慢放到耳朵高度'],
+      watch: ['别过度挺腰，肋骨往下压', '下放不低于耳朵', '手肘不要往外张成一字'] },
+    cableRow: { n: '坐姿绳索划船', eq: '划船机 · V 把', img: 'Seated_Cable_Rows',
+      cues: ['肘贴身拉到肚脐', '顶点夹背', '腰不摆'],
+      prep: ['脚踩稳踏板，膝盖微屈，上身坐直', '手臂伸直，肩胛骨放松往前'],
+      move: ['手肘贴着身体往后拉到肚脐附近', '顶点挺胸，肩胛骨夹紧，停一秒', '慢慢放回去，让肩胛骨跟着往前伸'],
+      watch: ['不要用腰前后摆动借力', '肩膀不往上耸', '回放要控制'] },
+    latRaise: { n: '侧平举', eq: '哑铃', img: 'Side_Lateral_Raise',
+      cues: ['肘带动', '抬到肩高', '不耸肩'],
+      prep: ['哑铃在身体两侧，手肘微屈并保持', '躯干微微前倾一点'],
+      move: ['想着用手肘带动，往两侧抬到与肩膀同高', '手和手肘差不多高', '慢放'],
+      watch: ['肩膀往下沉，不耸', '重量宁可轻', '顶点不高过肩'] },
+    pushdown: { n: '绳索下压', eq: '高位绳索', img: 'Triceps_Pushdown',
+      cues: ['肘贴身不动', '压到伸直', '顶点收紧'],
+      prep: ['站在绳索前一小步，上身微前倾', '手肘贴在身体两侧，前臂抬到约 90 度'],
+      move: ['只动前臂，往下压到手臂完全伸直', '顶点收紧三头，停一下', '慢回到 90 度'],
+      watch: ['手肘不要前后晃', '不要用身体往下压', '肩膀不往前耸'] },
+    squat: { n: '杠铃深蹲', eq: '深蹲架', img: 'Barbell_Squat',
+      cues: ['核心绷紧', '蹲到大腿平行', '膝盖顺脚尖'],
+      prep: ['杠放在上背斜方肌上，不压颈椎', '脚与肩同宽或略宽，脚尖外展 15 到 30 度', '出架站稳，吸气，肚子往外顶绷紧核心'],
+      move: ['屁股往后、膝盖往前同时启动，往下坐', '至少蹲到大腿与地面平行', '站起时胸和屁股一起起来'],
+      watch: ['膝盖不往内扣', '脚跟不离地', '背保持平直'] },
+    rdl: { n: '罗马尼亚硬拉', eq: '杠铃', img: 'Romanian_Deadlift',
+      cues: ['屁股往后推', '杠贴腿滑', '背不圆'],
+      prep: ['站立持杠，脚与髋同宽', '膝盖微屈，整个过程保持这个弯曲度', '肩胛骨后收，背绷直'],
+      move: ['屁股往后推，杠贴着大腿往下滑', '降到大腿后侧拉伸感最强的位置，通常在膝盖下方', '髋往前顶站直，顶点夹臀'],
+      watch: ['不是往下蹲，是屁股往后推', '杠全程贴腿', '背圆了就减重量'] },
+    legPress: { n: '腿举', eq: '腿举机', img: 'Leg_Press',
+      cues: ['屁股贴垫', '放到膝 90 度', '顶点不锁膝'],
+      prep: ['脚放踏板中部，与肩同宽，脚尖微外展', '腰和臀部贴紧靠背'],
+      move: ['慢放到膝盖约 90 度，屁股不离垫', '推回去，膝盖不完全锁死'],
+      watch: ['屁股离垫就是放太深', '膝盖不内扣', '顶点不锁膝'] },
+    legCurl: { n: '腿弯举', eq: '器械', img: 'Seated_Leg_Curl',
+      cues: ['勾脚往臀拉', '顶点停一秒', '慢放不甩'],
+      prep: ['挡垫卡在脚踝上方一点', '膝关节对准器械转轴'],
+      move: ['勾脚，把挡垫往臀部方向拉', '顶点停一秒', '慢放到腿接近伸直'],
+      watch: ['髋不要抬起来', '下放控制住'] },
+    calf: { n: '提踵', eq: '站姿器械', img: 'Standing_Calf_Raises',
+      cues: ['底部拉到位', '顶点停一秒', '全程慢'],
+      prep: ['前脚掌踩在踏板边缘，脚跟悬空', '脚跟先往下沉到小腿有拉伸感'],
+      move: ['踮到最高点，停一秒', '用两到三秒慢慢降到最低'],
+      watch: ['别弹跳', '底部拉伸要到位', '膝盖保持伸直'] },
+    core: { n: '悬垂举腿', eq: '单杠 · 或绳索卷腹', img: 'Hanging_Leg_Raise',
+      cues: ['收腹抬腿', '不摆荡', '做不了就屈膝'],
+      prep: ['挂在单杠上，肩膀微微下沉', '做不了直腿就屈膝抬到胸前'],
+      move: ['收腹，把腿抬到与地面平行', '慢放'],
+      watch: ['不要前后摆荡借力', '换绳索卷腹时是卷脊柱，不是弯髋'] },
+    bbRow: { n: '杠铃划船', eq: '杠铃', img: 'Bent_Over_Barbell_Row',
+      cues: ['俯身 30–45 度', '拉到下腹', '身体不起伏'],
+      prep: ['屁股往后推俯身，上身与地面约 30 到 45 度', '膝盖微屈，正握比肩略宽，背绷平'],
+      move: ['手肘往后带，把杠拉到下腹、肚脐附近', '顶点夹背，停一下', '慢放到手臂伸直'],
+      watch: ['身体不上下起伏借力', '背不能圆', '拉到下腹，不是胸'],
+      tip: '下背累或者腰有感觉，就换成胸部支撑划船，一样的组次数。' },
+    inclineDb: { n: '上斜哑铃卧推', eq: '可调椅 30 度', img: 'Incline_Dumbbell_Press',
+      cues: ['靠背 30 度', '肩胛后夹', '放到胸外侧'],
+      prep: ['靠背调到 30 度左右，再高就变成练肩', '肩胛骨后夹下沉，哑铃举到上胸两侧'],
+      move: ['推到上方让两个哑铃靠拢', '慢放到胸外侧有拉伸感'],
+      watch: ['靠背角度不超过 45 度', '手腕保持直的', '手肘不要掉太低'] },
+    facePull: { n: '面拉', eq: '绳索 · 绳把 · 脸的高度', img: 'Face_Pull',
+      cues: ['拉到脸两侧', '肘高于手', '重量要轻'],
+      prep: ['绳索调到脸的高度，握住绳把两端，拇指朝后', '退一步让绳索绷紧'],
+      move: ['往脸的两侧拉，手肘高、往外张', '拉到底时手在耳朵旁边，上臂像在做"投降"的姿势', '慢放'],
+      watch: ['重量要轻，练的是后肩和肩袖', '手肘全程高于手腕', '不耸肩'] },
+    curl: { n: '弯举', eq: '杠铃 · 锤式隔周换', img: 'Barbell_Curl', img2: 'Hammer_Curls',
+      cues: ['肘贴身不前跑', '身体不摆', '慢放'],
+      prep: ['站立，手肘贴在身体两侧', '杠铃弯举掌心朝前；锤式弯举掌心相对'],
+      move: ['只动前臂，弯到顶部', '顶点收紧二头，停一下', '慢放到手臂伸直'],
+      watch: ['手肘不往前跑', '身体不前后摆动', '下放一定要控制'] },
+    negPull: { n: '离心引体向上', eq: '单杠 · 踩凳或跳上去', img: 'Pullups', extra: true,
+      cues: ['从顶部开始', '3–5 秒放下', '放不住就停'],
+      prep: ['踩凳子或跳起来让下巴过杠，正握略宽于肩'],
+      move: ['用 3 到 5 秒慢慢放到手臂伸直', '踩回凳子，再来一次'],
+      watch: ['每次都从顶部开始', '放不住的时候这组就结束'],
+      tip: '加练，不计入正式组数。能稳定做 3 组每组 5 次慢放后，就可以试正式引体了。' },
+    bulgarian: { n: '保加利亚分腿蹲', eq: '哑铃 · 凳子', img: 'Split_Squat_with_Dumbbells',
+      cues: ['后脚搭凳', '前腿蹲到平行', '重心在前脚'],
+      prep: ['背对凳子，一只脚的脚背放在凳面上', '前脚往前迈一大步，哑铃垂在身体两侧'],
+      move: ['上身直立略前倾，往下蹲到前腿大腿接近平行', '前膝顺着脚尖方向', '用前脚蹬起站直'],
+      watch: ['前脚离凳子太近会顶膝盖', '后腿只是支撑', '两边做完再换'] },
+    hack: { n: '哈克蹲', eq: '器械 · 或腿举', img: 'Hack_Squat',
+      cues: ['背贴靠背', '蹲到平行', '脚跟不离'],
+      prep: ['背贴靠背，脚放踏板中间偏上，与肩同宽'],
+      move: ['慢放到大腿与踏板平行', '推起，膝盖不锁死'],
+      watch: ['脚跟不离踏板', '膝盖不内扣'],
+      tip: '时间不够先砍这个动作。' },
+    hipThrust: { n: '臀推', eq: '杠铃 · 凳子', img: 'Barbell_Hip_Thrust',
+      cues: ['肩胛下缘靠凳', '顶到身体一条线', '下巴微收'],
+      prep: ['上背靠在凳子边缘，肩胛骨下缘贴凳', '杠放在髋前，垫上护垫', '脚跟靠近臀部，小腿在顶点垂直地面'],
+      move: ['髋往上顶，顶到上身和大腿一条直线', '顶点夹臀停一秒', '慢放'],
+      watch: ['顶点不要过度挺腰', '脚放太远会变成腘绳肌主导', '眼睛看前方，别仰头'] },
+  };
+
+  const DAYS = [
+    { id: 'ua', tab: '上肢', mark: 'A', title: '上肢 A', focus: '推为主', mins: 65, items: [
+      ['bench', 4, '5–8', '休 2–3 分'], ['latWide', 4, '8–12', '休 90 秒'], ['dbPress', 3, '8–10', '休 90 秒'],
+      ['cableRow', 3, '10–12', '休 60–90 秒'], ['latRaise', 3, '12–15', '休 60 秒'], ['pushdown', 3, '10–12', '休 60 秒'],
+    ]},
+    { id: 'la', tab: '下肢', mark: 'A', title: '下肢 A', focus: '蹲为主', mins: 65, items: [
+      ['squat', 4, '5–8', '休 2–3 分'], ['rdl', 3, '8–10', '休 2 分'], ['legPress', 3, '10–12', '休 90 秒'],
+      ['legCurl', 3, '12–15', '休 60 秒'], ['calf', 4, '15–20', '休 60 秒'], ['core', 3, '12–15', '休 60 秒'],
+    ]},
+    { id: 'ub', tab: '上肢', mark: 'B', title: '上肢 B', focus: '拉为主', mins: 65, items: [
+      ['bbRow', 4, '6–8', '休 2–3 分'], ['inclineDb', 3, '8–10', '休 90 秒'], ['latClose', 3, '10–12', '休 90 秒'],
+      ['facePull', 3, '15', '休 60 秒'], ['latRaise', 3, '12–15', '休 60 秒'], ['curl', 3, '10–12', '休 60 秒'],
+      ['negPull', 3, '3–5', '休 90 秒'],
+    ]},
+    { id: 'lb', tab: '下肢', mark: 'B', title: '下肢 B', focus: '后链为主', mins: 70, items: [
+      ['rdl', 4, '6–8', '休 2–3 分'], ['bulgarian', 3, '10 / 侧', '休 90 秒'], ['legCurl', 4, '10–12', '休 60–90 秒'],
+      ['hack', 3, '10–12', '休 90 秒'], ['hipThrust', 3, '10–12', '休 90 秒'], ['calf', 4, '15–20', '休 60 秒'],
+    ]},
+  ];
+
+  const NOTES = `
+    <div class="notes">
+      <h3>排班</h3>
+      <p>练二休一、练二休二，上下肢交替，不要四天连着练。一种排法：</p>
+      <div class="week">
+        <div class="on"><small>一</small><b>上A</b></div>
+        <div class="on"><small>二</small><b>下A</b></div>
+        <div class="off"><small>三</small>休</div>
+        <div class="on"><small>四</small><b>上B</b></div>
+        <div class="on"><small>五</small><b>下B</b></div>
+        <div class="off"><small>六</small>休</div>
+        <div class="off"><small>日</small>休</div>
+      </div>
+      <p>也可以周一、三、五、六。休息日可以做 20–30 分钟快走或单车。</p>
+
+      <h3>强度</h3>
+      <ul>
+        <li>每组做到 RPE 7–9：还能再做 1–3 次就停。</li>
+        <li>卧推、深蹲、硬拉、划船组间休 2–3 分钟，其余 60–90 秒。</li>
+        <li>渐进超负荷：一个次数区间的上限能完成，下周就加重量。加不上去就加次数。</li>
+        <li>重量增加前先保证动作标准，不代偿。</li>
+      </ul>
+
+      <h3>减量周</h3>
+      <p>每练 5–6 周，用一周把组数砍一半、重量不变。肌腱、关节和神经的疲劳比肌肉恢复得慢，这周是清疲劳，不是休息。出现下面两条以上，就提前减量：</p>
+      <div class="signals">
+        <div>连续两周同样的重量越做越吃力</div>
+        <div>肩、肘、膝开始有酸痛</div>
+        <div>睡眠和食欲变差</div>
+        <div>去健身房提不起劲</div>
+      </div>
+
+      <h3>引体向上过渡</h3>
+      <p>高位下拉的重量拉到体重的八成左右，引体基本就能做了。上肢 B 最后的离心引体是铺路用的，能做 3 组每组 5 次慢放之后，试着做正式引体。</p>
+
+      <h3>吃和睡</h3>
+      <ul>
+        <li>蛋白质每天每公斤体重 1.6–2.2 克。</li>
+        <li>睡 7–8 小时，肌肉在恢复期生长。</li>
+      </ul>
+
+      <h3>图片来源</h3>
+      <p class="src">动作照片来自公开领域数据集 <a href="https://github.com/yuhonas/free-exercise-db">free-exercise-db</a>（Unlicense），每个动作取起始和结束两帧。源码：<a href="https://github.com/Defiabell/yilian">github.com/Defiabell/yilian</a>（MIT）。勾选记录只存在本机浏览器里。</p>
+    </div>`;
+
+  const KEY = 'gymplan-done';
+  function load() { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { return {}; } }
+  function save(d) { try { localStorage.setItem(KEY, JSON.stringify(d)); } catch (e) {} }
+  let done = load();
+  let current = 'ua';
+  let open = {};
+  try { const h = location.hash.replace('#', ''); if (h && (DAYS.some(d => d.id === h) || h === 'notes')) current = h; } catch (e) {}
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const tabsEl = document.getElementById('tabs');
+  const panel = document.getElementById('panel');
+
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function list(tag, arr) { return '<' + tag + '>' + arr.map(x => '<li>' + esc(x) + '</li>').join('') + '</' + tag + '>'; }
+
+  function renderTabs() {
+    tabsEl.innerHTML = '';
+    DAYS.forEach(d => tabsEl.appendChild(tabBtn(d.id, d.tab, d.mark)));
+    tabsEl.appendChild(tabBtn('notes', '说明', '✦'));
+  }
+  function tabBtn(id, label, mark) {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'tab'; b.role = 'tab'; b.id = 'tab-' + id;
+    b.setAttribute('aria-selected', String(id === current));
+    b.innerHTML = '<small>' + mark + '</small>' + label;
+    b.addEventListener('click', () => { current = id; open = {}; try { history.replaceState(null, '', '#' + id); } catch (e) {} render(); window.scrollTo(0, 0); });
+    return b;
+  }
+
+  /* 两帧交替：所有卡片共用一个节拍，避免一堆定时器 */
+  let beat = null;
+  function startBeat() {
+    clearInterval(beat);
+    if (reduceMotion) return;
+    beat = setInterval(() => {
+      document.querySelectorAll('.frame:not(.paused)').forEach(f => {
+        f.classList.toggle('alt');
+        const on = f.classList.contains('alt');
+        f.querySelector('.dots i:nth-child(1)').classList.toggle('on', !on);
+        f.querySelector('.dots i:nth-child(2)').classList.toggle('on', on);
+        f.querySelector('.lbl').textContent = on ? '结束' : '起始';
+      });
+    }, 1100);
+  }
+
+  function render() {
+    renderTabs();
+    if (current === 'notes') { panel.innerHTML = NOTES; return; }
+    const d = DAYS.find(x => x.id === current);
+    const items = d.items.map(([k, sets, reps, rest]) => Object.assign({ sets, reps, rest }, EX[k]));
+    const main = items.filter(i => !i.extra);
+    const totalSets = main.reduce((s, i) => s + i.sets, 0);
+    const dd = done[d.id] || {};
+    const doneCount = main.filter((_, i) => dd[i]).length;
+
+    const html = [];
+    html.push('<div class="day-head"><h2>' + d.title + '<span>' + d.focus + '</span></h2>' +
+      '<div class="meta">' + main.length + ' 个动作 · ' + totalSets + ' 组<br>约 ' + d.mins + ' 分钟</div></div>');
+    html.push('<div class="progress"><i style="width:' + Math.round(doneCount / main.length * 100) + '%"></i></div>');
+    html.push('<div class="toolbar"><span>' + (doneCount === main.length ? '今天练完了' : '已完成 ' + doneCount + ' / ' + main.length) + '</span>' +
+      '<button type="button" class="reset" id="reset">重置本日</button></div>');
+    html.push('<div class="list">');
+    items.forEach((it, i) => {
+      const isDone = !!dd[i];
+      const o = !!open[i];
+      const src = 'img/' + it.img;
+      html.push('<div class="card' + (isDone ? ' done' : '') + (it.extra ? ' extra' : '') + '" data-i="' + i + '">' +
+        '<div class="frame" role="button" tabindex="0" aria-label="' + esc(it.n) + ' 动作示意，点击暂停">' +
+          '<img class="a" src="' + src + '_0.jpg" alt="' + esc(it.n) + ' 起始姿势">' +
+          '<img class="b" src="' + src + '_1.jpg" alt="' + esc(it.n) + ' 结束姿势">' +
+          '<div class="n">' + (it.extra ? '+' : i + 1) + '</div>' +
+          '<div class="dots"><i class="on"></i><i></i></div><div class="lbl">起始</div>' +
+        '</div>' +
+        '<div class="head">' +
+          '<div class="body"><div class="name">' + esc(it.n) + '</div><div class="sub">' + esc(it.eq) + ' · ' + esc(it.rest) + '</div></div>' +
+          '<div class="sets">' + it.sets + '<b>×</b>' + esc(it.reps) + '<em>组 × 次</em></div>' +
+          '<button type="button" class="check" aria-label="完成" aria-pressed="' + isDone + '">✓</button>' +
+        '</div>' +
+        '<div class="cues">' + it.cues.map(c => '<span>' + esc(c) + '</span>').join('') +
+          '<button type="button" class="more" aria-expanded="' + o + '">' + (o ? '收起' : '详细') + '</button></div>' +
+        '<div class="how"' + (o ? '' : ' hidden') + '>' +
+          '<div class="row"><div class="k">准备</div>' + list('ul', it.prep) + '</div>' +
+          '<div class="row"><div class="k">做法</div>' + list('ol', it.move) + '</div>' +
+          '<div class="row"><div class="k">注意</div>' + list('ul', it.watch) + '</div>' +
+          (it.tip ? '<div class="tip">' + esc(it.tip) + '</div>' : '') +
+        '</div></div>');
+    });
+    html.push('</div>');
+    panel.innerHTML = html.join('');
+
+    panel.querySelectorAll('.card').forEach(c => {
+      const i = c.dataset.i;
+      const frame = c.querySelector('.frame');
+      const pause = () => frame.classList.toggle('paused');
+      frame.addEventListener('click', pause);
+      frame.addEventListener('keydown', e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); pause(); } });
+      c.querySelector('.more').addEventListener('click', () => { open[i] = !open[i]; render(); });
+      c.querySelector('.check').addEventListener('click', () => {
+        done[d.id] = done[d.id] || {};
+        done[d.id][i] = !done[d.id][i];
+        save(done); render();
+      });
+    });
+    document.getElementById('reset').addEventListener('click', () => { done[d.id] = {}; save(done); render(); });
+    startBeat();
+  }
+  render();
+
+  /* 组间计时 */
+  const clock = document.getElementById('clock');
+  const btns = document.getElementById('timerBtns');
+  const BTNS = '<button type="button" data-s="60">60 秒</button><button type="button" data-s="90">90 秒</button><button type="button" data-s="180">3 分钟</button>';
+  let timer = null, endAt = 0;
+  function fmt(s) { s = Math.max(0, Math.ceil(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+  function setClock(txt, cls) { clock.innerHTML = '<small>组间休息</small>' + txt; clock.className = 'clock' + (cls ? ' ' + cls : ''); }
+  function beep() {
+    try {
+      const ac = new (window.AudioContext || window.webkitAudioContext)();
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.connect(g); g.connect(ac.destination); o.frequency.value = 880; g.gain.value = 0.15;
+      o.start(); o.stop(ac.currentTime + 0.35);
+    } catch (e) {}
+    try { navigator.vibrate && navigator.vibrate([200, 100, 200]); } catch (e) {}
+  }
+  function stop() { clearInterval(timer); timer = null; btns.innerHTML = BTNS; setClock('0:00', ''); }
+  function start(sec) {
+    clearInterval(timer);
+    endAt = Date.now() + sec * 1000;
+    btns.innerHTML = '<button type="button" class="stop" data-stop="1">停止</button>';
+    const tick = () => {
+      const left = (endAt - Date.now()) / 1000;
+      if (left <= 0) { clearInterval(timer); timer = null; setClock('开始', 'over'); beep(); btns.innerHTML = BTNS; return; }
+      setClock(fmt(left), 'run');
+    };
+    tick(); timer = setInterval(tick, 250);
+  }
+  btns.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.stop) stop(); else start(Number(b.dataset.s));
+  });
+</script>
+</body>
+</html>

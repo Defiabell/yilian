@@ -1,0 +1,6 @@
+/img/*
+  Cache-Control: public, max-age=2592000, immutable
+/icon-512.png
+  Cache-Control: public, max-age=2592000
+/apple-touch-icon.png
+  Cache-Control: public, max-age=2592000
