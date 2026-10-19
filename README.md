@@ -29,7 +29,7 @@
 
 ```sh
 npx wrangler login
-npx wrangler pages project create yilian-app --production-branch main
+npx wrangler pages project create yilian-app --production-branch main --force   # 只有建项目这一次要 --force，否则新版 wrangler 会把它转成 Worker
 npm run deploy
 ```
 
