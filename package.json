@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "npx -y serve public",
     "sitemap": "node scripts/sitemap.mjs",
-    "predeploy": "npm run sitemap",
-    "deploy": "npx -y wrangler@4 pages deploy public --project-name yilian-app --branch main --commit-dirty=true"
+    "deploy": "node scripts/sitemap.mjs && npx -y wrangler@4 pages deploy public --project-name yilian-app --branch main --commit-dirty=true"
   }
 }
