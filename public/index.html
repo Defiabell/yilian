@@ -16,6 +16,16 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="一练 · 四练上下肢计划">
+<meta name="twitter:description" content="每周四练的上下肢分化训练计划：动作示意图、组数次数、要点、勾选和组间计时。">
+<meta name="twitter:image" content="https://yilian.defiabell.com/og.png">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+{"@type":"WebSite","@id":"https://yilian.defiabell.com/#website","name":"一练","alternateName":"四练上下肢计划","url":"https://yilian.defiabell.com/","description":"每周四练的上下肢分化训练计划：动作示意图、组数次数、要点、勾选和组间计时。","inLanguage":"zh-CN","author":{"@id":"https://defiabell.com/#person"},"publisher":{"@id":"https://defiabell.com/#person"}},
+{"@type":"Person","@id":"https://defiabell.com/#person","name":"Jinkun Sun","alternateName":"Defiabell","url":"https://defiabell.com/","sameAs":["https://github.com/Defiabell","https://defiabell.github.io/","https://defiabell.pages.dev/"]},
+{"@type":"WebApplication","@id":"https://yilian.defiabell.com/#app","name":"一练","alternateName":"四练上下肢计划","url":"https://yilian.defiabell.com/","description":"每周四练的上下肢分化训练计划：动作示意图、组数次数、要点、勾选和组间计时。","inLanguage":"zh-CN","image":"https://yilian.defiabell.com/og.png","applicationCategory":"HealthApplication","applicationSubCategory":"训练计划","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":0,"priceCurrency":"CNY","availability":"https://schema.org/InStock"},"featureList":["四天上下肢分化：上肢 A（推）、下肢 A（蹲）、上肢 B（拉）、下肢 B（后链）","每个动作起始／结束两帧示意图","组数 × 次数、要点与详细做法","勾选完成，进度存本机浏览器","组间休息计时器 60 秒／90 秒／3 分钟","可加到 iPhone 主屏幕作 PWA 使用"],"author":{"@id":"https://defiabell.com/#person"},"publisher":{"@id":"https://defiabell.com/#person"},"isPartOf":{"@id":"https://yilian.defiabell.com/#website"}}
+]}
+</script>
 <meta name="theme-color" content="#f2f3f5" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#111419" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -169,6 +179,14 @@
   .signals { display: grid; gap: 6px; }
   .signals div { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; font-size: 13px; }
 
+  /* 关于（静态正文，给不执行脚本的读者和爬虫） */
+  .about { border-top: 1px solid var(--line); margin-top: 28px; padding-top: 16px; color: var(--muted); font-size: 14px; }
+  .about h2 { font-family: var(--display); font-size: 22px; font-weight: 700; margin: 0 0 8px; color: var(--fg); letter-spacing: 0.01em; }
+  .about p { margin: 0 0 8px; }
+  .about b { color: var(--fg); font-weight: 600; }
+  .about .src { font-size: 12px; }
+  .about a { color: inherit; }
+
   /* 组间计时 */
   .timer {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 6;
@@ -199,6 +217,13 @@
 
   <nav class="tabs" role="tablist" id="tabs"></nav>
   <section id="panel"></section>
+  <section class="about" id="about">
+    <h2>关于这个计划</h2>
+    <p>「一练」是一份每周四练的上下肢分化训练计划，做成了手机上看的网页：没有账号，没有后端，一个 HTML 文件加 42 张动作图；加到 iPhone 主屏幕可以当独立 App 用，跟随系统深浅色。</p>
+    <p>四天分别是<b>上肢 A（推为主）</b>、<b>下肢 A（蹲为主）</b>、<b>上肢 B（拉为主）</b>、<b>下肢 B（后链为主）</b>，每个部位一周练两次，练二休一、练二休二，上下肢交替，不要四天连着练。引体向上先用高位下拉替代，上肢 B 末尾加离心引体过渡。每练 5 到 6 周减量一周：组数砍半，重量不变。</p>
+    <p><b>怎么用</b>：顶上四个标签切换训练日，每个动作一张卡片，右边大字是组数 × 次数；动作图在起始和结束两帧之间自动切换，点一下暂停；三个短标签是最要紧的要点，想看完整做法点「详细」；右边圆圈勾选完成，进度条跟着走，记录只存在本机浏览器里。底部固定一个组间休息计时器，60 秒、90 秒、3 分钟，到点响一声并震动。「说明」标签里有一周各部位组数、排班、强度、减量周信号、引体向上过渡和吃睡建议。</p>
+    <p class="src">动作照片来自公有领域数据集 <a href="https://github.com/yuhonas/free-exercise-db">free-exercise-db</a>（Unlicense），每个动作取起始和结束两帧。源码：<a href="https://github.com/Defiabell/yilian">github.com/Defiabell/yilian</a>（MIT）。</p>
+  </section>
   <footer class="credit">作者：Jinkun · <a href="https://defiabell.com" rel="author">defiabell.com</a></footer>
 </div>
 

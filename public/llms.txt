@@ -1,0 +1,22 @@
+# 一练
+
+> 「一练」是一份每周四练的上下肢分化训练计划，做成了手机上看的网页：上肢 A（推）、下肢 A（蹲）、上肢 B（拉）、下肢 B（后链），每个动作有起始／结束两帧示意图、组数次数、要点和详细做法，可以勾选完成，底部有组间休息计时器。没有账号、没有后端，记录只存在本机浏览器里，可加到 iPhone 主屏幕作 PWA 使用。
+
+作者：Jinkun Sun（Defiabell）· https://defiabell.com/ · https://github.com/Defiabell
+站点：https://yilian.defiabell.com/
+语言：中文
+
+## 怎么用
+
+- 四天分 tab：上肢 A（推为主）、下肢 A（蹲为主）、上肢 B（拉为主）、下肢 B（后链为主）；每个部位一周两次，练二休一、练二休二，上下肢交替。
+- 每个动作一张卡片：右边大字是组数 × 次数；图片在起始和结束两帧间自动切换，点一下暂停；三个短标签是要点，「详细」展开完整做法。
+- 右边圆圈勾选完成，进度条跟着走；记录存在浏览器 localStorage，不上传。
+- 底部组间休息计时器：60 秒／90 秒／3 分钟，到点响一声并震动。
+- 「说明」页：一周各部位组数、排班、强度（RPE 7–9、渐进超负荷）、减量周（每 5–6 周组数砍半重量不变）、引体向上过渡、吃和睡。
+- 动作照片来自 free-exercise-db（Unlicense）；源码 MIT。
+
+## 链接
+
+- [一练 · 四练上下肢计划](https://yilian.defiabell.com/): 计划本身（单页应用，四天＋说明）
+- [源码](https://github.com/Defiabell/yilian): GitHub，MIT；改 `public/index.html` 里的 `EX`／`DAYS` 即可换动作或组次
+- [free-exercise-db](https://github.com/yuhonas/free-exercise-db): 动作照片来源（公有领域）

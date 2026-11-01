@@ -5,6 +5,8 @@
   "description": "一练：每周四练的上下肢分化训练计划，纯静态 PWA。",
   "scripts": {
     "dev": "npx -y serve public",
+    "sitemap": "node scripts/sitemap.mjs",
+    "predeploy": "npm run sitemap",
     "deploy": "npx -y wrangler@4 pages deploy public --project-name yilian-app --branch main --commit-dirty=true"
   }
 }
