@@ -2,7 +2,13 @@
 
 每周四练的上下肢分化训练计划，做成一个手机上看的网页。没有账号，没有后端，一个 HTML 文件加 42 张动作图。
 
-线上：https://yilian-app.pages.dev
+线上：https://yilian.defiabell.com
+
+<p>
+  <img src="docs/screenshots/01-day.jpg" width="31%" alt="训练日：每个动作一张卡片，右边是组数和次数">
+  <img src="docs/screenshots/02-detail.jpg" width="31%" alt="勾选完成、展开详细做法、底部组间休息计时">
+  <img src="docs/screenshots/03-notes.jpg" width="31%" alt="说明页：一周各部位组数和排班">
+</p>
 
 ## 它是什么
 
